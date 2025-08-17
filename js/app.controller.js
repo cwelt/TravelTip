@@ -81,10 +81,16 @@ function renderLocs(locs) {
 }
 
 function onRemoveLoc(locId) {
+  if (!confirm('Are you sure you want to remove this location?')) {
+    flashMsg('Location removal cancelled');
+    return;
+  }
   locService
     .remove(locId)
-    .then(() => {
-      flashMsg('Location removed');
+    .then(removedLoc => {
+      flashMsg(
+        `Location "${removedLoc.name} (${removedLoc.geo.address})" removed successfully.`
+      );
       unDisplayLoc();
       loadAndRenderLocs();
     })
