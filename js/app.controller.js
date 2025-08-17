@@ -45,6 +45,11 @@ function renderLocs(locs) {
         <li class="loc ${className}" data-id="${loc.id}">
             <h4>  
                 <span>${loc.name}</span>
+                <span>Distance: ${utilService.getDistance(
+                  loc.geo,
+                  gUserPos,
+                  'K'
+                )} KM.</span>
                 <span title="${loc.rate} stars">${'★'.repeat(loc.rate)}</span>
             </h4>
             <p class="muted">
