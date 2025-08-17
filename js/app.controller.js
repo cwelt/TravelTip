@@ -18,6 +18,8 @@ window.app = {
   onSetFilterBy,
 };
 
+var gUserPos = { lat: 0, lng: 0 };
+
 function onInit() {
   getFilterByFromQueryParams();
   loadAndRenderLocs();
@@ -151,6 +153,7 @@ function onPanToUserPos() {
     .getUserPosition()
     .then(latLng => {
       mapService.panTo({ ...latLng, zoom: 15 });
+      _setUserPos(latLng);
       unDisplayLoc();
       loadAndRenderLocs();
       flashMsg(`You are at Latitude: ${latLng.lat} Longitude: ${latLng.lng}`);
@@ -338,4 +341,8 @@ function cleanStats(stats) {
     return acc;
   }, []);
   return cleanedStats;
+}
+
+function _setUserPos(userPos = { lat: 0, lng: 0 }) {
+  ({ lat: gUserPos.lat, lng: gUserPos.lng } = userPos);
 }
