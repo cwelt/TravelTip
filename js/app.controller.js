@@ -18,6 +18,8 @@ window.app = {
   onSetFilterBy,
 };
 
+var gUserPos = { lat: 0, lng: 0 };
+
 function onInit() {
   getFilterByFromQueryParams();
   loadAndRenderLocs();
@@ -43,6 +45,11 @@ function renderLocs(locs) {
         <li class="loc ${className}" data-id="${loc.id}">
             <h4>  
                 <span>${loc.name}</span>
+                <span>Distance: ${utilService.getDistance(
+                  loc.geo,
+                  gUserPos,
+                  'K'
+                )} KM.</span>
                 <span title="${loc.rate} stars">${'★'.repeat(loc.rate)}</span>
             </h4>
             <p class="muted">
@@ -151,6 +158,7 @@ function onPanToUserPos() {
     .getUserPosition()
     .then(latLng => {
       mapService.panTo({ ...latLng, zoom: 15 });
+      _setUserPos(latLng);
       unDisplayLoc();
       loadAndRenderLocs();
       flashMsg(`You are at Latitude: ${latLng.lat} Longitude: ${latLng.lng}`);
@@ -201,6 +209,13 @@ function displayLoc(loc) {
   el.querySelector('.loc-name').innerText = loc.name;
   el.querySelector('.loc-address').innerText = loc.geo.address;
   el.querySelector('.loc-rate').innerHTML = '★'.repeat(loc.rate);
+  el.querySelector(
+    '.loc-distance'
+  ).innerText = `Distance: ${utilService.getDistance(
+    loc.geo,
+    gUserPos,
+    'K'
+  )} KM.`;
   el.querySelector('[name=loc-copier]').value = window.location;
   el.classList.add('show');
 
@@ -338,4 +353,8 @@ function cleanStats(stats) {
     return acc;
   }, []);
   return cleanedStats;
+}
+
+function _setUserPos(userPos = { lat: 0, lng: 0 }) {
+  ({ lat: gUserPos.lat, lng: gUserPos.lng } = userPos);
 }
