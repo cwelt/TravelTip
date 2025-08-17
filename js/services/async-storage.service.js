@@ -53,8 +53,9 @@ function remove(entityType, entityId) {
       throw new Error(
         `Remove failed, cannot find entity with id: ${entityId} in: ${entityType}`
       );
-    entities.splice(idx, 1);
+    const removedEntities = entities.splice(idx, 1);
     _save(entityType, entities);
+    return removedEntities[0];
   });
 }
 
