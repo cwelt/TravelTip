@@ -105,6 +105,24 @@ function getLocCountByRateMap() {
   });
 }
 
+function getLocCountByModificationTimeMap() {
+  const now = Date.now();
+  return storageService.query(DB_KEY).then(locs => {
+    const locCountByModificationTimeMap = locs.reduce(
+      (map, loc) => {
+        const hoursPast = Math.floor((now - loc.updatedAt) / (1000 * 60 * 60));
+        if (hoursPast < 24) map.today++;
+        else if (hoursPast >= 24) map.past++;
+        else map.never++;
+        return map;
+      },
+      { today: 0, past: 0, never: 0 }
+    );
+    locCountByModificationTimeMap.total = locs.length;
+    return locCountByModificationTimeMap;
+  });
+}
+
 function setSortBy(sortBy = {}) {
   gSortBy = sortBy;
 }
