@@ -7,7 +7,7 @@ export const mapService = {
   addClickListener,
 };
 
-// TODO: Enter your API Key
+// Usage is restricted in google cloud console for cwelt.github.io/TravelTip domain only
 const API_KEY = 'AIzaSyA13U2xpsMDfnV7anUB-R2yCfAOQwphB4Y';
 var gMap;
 var gMarker;
