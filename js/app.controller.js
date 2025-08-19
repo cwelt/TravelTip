@@ -16,6 +16,7 @@ window.app = {
   onShareLoc,
   onSetSortBy,
   onSetFilterBy,
+  onSaveLoc,
 };
 
 var gUserPos = { lat: 0, lng: 0 };
@@ -121,6 +122,7 @@ function onSearchAddress(ev) {
     });
 }
 
+/*
 function onAddLoc(geo) {
   const locName = prompt('Loc name', geo.address || 'Just a place');
   if (!locName) return;
@@ -141,6 +143,15 @@ function onAddLoc(geo) {
       console.error('OOPs:', err);
       flashMsg('Cannot add location');
     });
+} */
+
+/* This function is called from mapService.addClickListener
+ * It is used to add a location by clicking on the map */
+function onAddLoc(geo) {
+  const elDialog = document.querySelector('dialog.loc-edit');
+  elDialog.dataset.geo = JSON.stringify(geo);
+  elDialog.querySelector('input[name=name]').value = geo.address;
+  elDialog.showModal();
 }
 
 function loadAndRenderLocs() {
@@ -168,7 +179,7 @@ function onPanToUserPos() {
       flashMsg('Cannot get your position');
     });
 }
-
+/*
 function onUpdateLoc(locId) {
   locService.getById(locId).then(loc => {
     const rate = prompt('New rate?', loc.rate);
@@ -185,6 +196,21 @@ function onUpdateLoc(locId) {
           flashMsg('Cannot update location');
         });
     }
+  });
+}*/
+
+function onUpdateLoc(locId) {
+  locService.getById(locId).then(loc => {
+    const elDialog = document.querySelector('dialog.loc-edit');
+    const elInputId = elDialog.querySelector('input[name=id]');
+    const elInputName = elDialog.querySelector('input[name=name]');
+    const elInputRate = elDialog.querySelector('input[name=rate]');
+
+    elInputId.value = loc.id;
+    elInputName.value = loc.name;
+    elInputRate.value = loc.rate;
+
+    elDialog.showModal();
   });
 }
 
@@ -302,7 +328,6 @@ function renderLocStats() {
     handleStats(stats, 'loc-stats-rate');
   });
 
-  debugger;
   locService.getLocCountByModificationTimeMap().then(stats => {
     handleStats(stats, 'loc-stats-updated');
   });
@@ -363,4 +388,35 @@ function cleanStats(stats) {
 
 function _setUserPos(userPos = { lat: 0, lng: 0 }) {
   ({ lat: gUserPos.lat, lng: gUserPos.lng } = userPos);
+}
+
+function onSaveLoc(ev) {
+  ev.preventDefault();
+  const elDialog = document.querySelector('dialog.loc-edit');
+  const elInputId = elDialog.querySelector('input[name=id]');
+  const elInputName = elDialog.querySelector('input[name=name]');
+  const elInputRate = elDialog.querySelector('input[name=rate]');
+  if (!elInputName.value || !elInputRate.value) return flashMsg('Missing info');
+
+  const loc = {
+    id: elInputId.value,
+    name: elInputName.value,
+    rate: +elInputRate.value,
+  };
+  // geo needed only for create, not for update
+  if (!loc.id) loc.geo = JSON.parse(elDialog.dataset.geo);
+
+  locService
+    .save(loc)
+    .then(savedLoc => {
+      elInputId.value = '';
+      elDialog.close();
+      flashMsg(`Location saved`);
+      utilService.updateQueryParams({ locId: savedLoc.id });
+      loadAndRenderLocs();
+    })
+    .catch(err => {
+      console.error('OOPs:', err);
+      flashMsg('Cannot add location');
+    });
 }

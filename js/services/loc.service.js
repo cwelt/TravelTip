@@ -109,7 +109,6 @@ function getLocCountByRateMap() {
 function getLocCountByModificationTimeMap() {
   const now = Date.now();
   return storageService.query(DB_KEY).then(locs => {
-    debugger;
     const locCountByModificationTimeMap = locs.reduce(
       (map, loc) => {
         if (loc.createdAt === loc.updatedAt || !loc.updatedAt) map.never++;
