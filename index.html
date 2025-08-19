@@ -99,6 +99,14 @@
     </main>
     <pre class="debug" hidden></pre>
     <div class="user-msg"></div>
+    <dialog class="loc-edit">
+      <form onsubmit="app.onSaveLoc(event)">
+        <input name="id" type="hidden" />
+        <input name="name" type="text" autofocus />
+        <input name="rate" type="number" value="3" />
+        <button>Save</button>
+      </form>
+    </dialog>
     <script type="module" src="js/app.controller.js"></script>
   </body>
 </html>
