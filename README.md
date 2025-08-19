@@ -28,6 +28,7 @@ TravelTip is an app that keeps a list of favorite locations
 - Reflected in query params
 - Copy url to clipboard
 - Share via Web-Share API
+- Shows distance
 
 ## Location
 
@@ -79,16 +80,17 @@ export const mapService = {
 // functions that are called from DOM are defined on a global app object
 
 window.app = {
-  onRemoveLoc,
-  onUpdateLoc,
-  onSelectLoc,
-  onPanToUserPos,
-  onSearchAddress,
-  onCopyLoc,
-  onShareLoc,
-  onSetSortBy,
-  onSetFilterBy,
-};
+    onRemoveLoc,
+    onUpdateLoc,
+    onSelectLoc,
+    onPanToUserPos,
+    onSearchAddress,
+    onCopyLoc,
+    onShareLoc,
+    onSetSortBy,
+    onSetFilterBy
+    onSaveLoc
+}
 ```
 
 Here is a sample usage:
